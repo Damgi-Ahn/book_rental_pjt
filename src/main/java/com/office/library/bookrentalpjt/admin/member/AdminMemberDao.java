@@ -108,7 +108,6 @@ public class AdminMemberDao {
         try {
 
             adminMemberVos = jdbcTemplate.query(sql, new RowMapper<AdminMemberVo>() {
-
                 @Override
                 public AdminMemberVo mapRow(ResultSet rs, int rowNum) throws SQLException {
 
@@ -133,7 +132,11 @@ public class AdminMemberDao {
 
             }, adminMemberVo.getA_m_id());
 
-            if (!passwordEncoder.matches(adminMemberVo.getA_m_pw(), adminMemberVos.get(0).getA_m_pw()))
+            if (adminMemberVos.isEmpty()) {
+                return null;
+            }
+
+            if (!passwordEncoder.matches(adminMemberVo.getA_m_pw(), adminMemberVos.getFirst().getA_m_pw()))
                 adminMemberVos.clear();
 
         } catch (Exception e) {
@@ -141,7 +144,7 @@ public class AdminMemberDao {
 
         }
 
-        return adminMemberVos.size() > 0 ? adminMemberVos.get(0) : null;
+        return adminMemberVos.get(0);
 
     }
 
